@@ -1,0 +1,94 @@
+{
+  "type": "mysql2",
+  "connection": {
+    "host": "private-db-mysql-lon1-40508-do-user-10392247-0.b.db.ondigitalocean.com",
+    "port": "25060",
+    "user": "doadmin",
+    "password": "P8i6K9LxwisEcz7j",
+    "database": "defaultdb",
+    "ssl": {
+      "ca": "/ca-certificatemy.crt"
+    }
+  },
+  "direct": true,
+  "schema": {
+    "tables": {
+      "roadcondition": {
+        "db": {
+          "engine": "InnoDB",
+          "schema": "defaultdb",
+          "collation": "utf8mb4_0900_ai_ci"
+        },
+        "columns": {
+          "rc_id": {
+            "db": {
+              "type": "increments",
+              "primary": true,
+              "nullable": false
+            }
+          },
+          "sensor_id": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "timestamp": {
+            "db": {
+              "type": "datetime",
+              "default": "knex.fn.now()",
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "surf_temp": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "air_temp": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "surf_cond": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "friction": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          },
+          "humidity": {
+            "db": {
+              "type": "string",
+              "maxLength": 255,
+              "primary": false,
+              "nullable": true
+            }
+          }
+        }
+      }
+    },
+    "views": {},
+    "schemas": [
+      "public"
+    ]
+  }
+}

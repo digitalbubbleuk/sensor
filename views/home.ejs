@@ -1,0 +1,33 @@
+<!-- Wappler include head-page="layouts/main" fontawesome_5="cdn" bootstrap5="local" is="dmx-app" id="home" appConnect="local" components="{dmxBootstrap5TableGenerator:{}}" -->
+<dmx-serverconnect id="serverconnect1" url="api/readData"></dmx-serverconnect>
+<meta name="ac:route" content="/">
+<div class="container wappler-block pt-5 pb-5">
+    <div class="row align-items-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rc</th>
+                    <th>Sensor</th>
+                    <th>Timestamp</th>
+                    <th>Surf temp</th>
+                    <th>Air temp</th>
+                    <th>Surf cond</th>
+                    <th>Friction</th>
+                    <th>Humidity</th>
+                </tr>
+            </thead>
+            <tbody is="dmx-repeat" dmx-generator="bs5table" dmx-bind:repeat="serverconnect1.data.queryData" id="tableRepeat1">
+                <tr>
+                    <td dmx-text="rc_id"></td>
+                    <td dmx-text="sensor_id"></td>
+                    <td dmx-text="timestamp"></td>
+                    <td dmx-text="surf_temp"></td>
+                    <td dmx-text="air_temp"></td>
+                    <td dmx-text="surf_cond"></td>
+                    <td dmx-text="friction"></td>
+                    <td dmx-text="humidity"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

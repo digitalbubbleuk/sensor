@@ -1,0 +1,49 @@
+{
+  "projectName": "sense",
+  "styleFile": "/css/style.css",
+  "assetsFolder": "/assets",
+  "designFramework": "bootstrap5",
+  "frameworks": [
+    {
+      "name": "fontawesome_5",
+      "type": "cdn"
+    },
+    {
+      "name": "bootstrap5",
+      "type": "local"
+    },
+    {
+      "name": "appConnect",
+      "type": "local"
+    }
+  ],
+  "projectServerModel": "node",
+  "webRootFolder": "/public",
+  "useRouting": true,
+  "addBase": true,
+  "routingHandler": "node",
+  "targets": [
+    {
+      "name": "Development",
+      "remoteURL": "http://localhost:3000/",
+      "access": "local"
+    },
+    {
+      "name": "production",
+      "remoteURL": "http://209.97.189.11",
+      "access": "sftp",
+      "ftpServer": "209.97.189.11",
+      "ftpPort": 22,
+      "ftpRemoteFolder": "/var/www/html",
+      "ftpUser": "root",
+      "ftpPassword": "20edf8cff58d8fa5",
+      "keyFile": "~/Desktop/doclearview.ppk",
+      "webLoggingMaxFiles": "5",
+      "webLoggingMaxFileSize": "10m",
+      "databaseLoggingMaxFiles": "5",
+      "databaseLoggingMaxFileSize": "10m"
+    }
+  ],
+  "activeTarget": "Development",
+  "projectType": "web"
+}

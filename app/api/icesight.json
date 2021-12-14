@@ -1,0 +1,209 @@
+{
+  "meta": {
+    "$_POST": [
+      {
+        "type": "text",
+        "name": "humidity"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "apiIceSight",
+        "module": "api",
+        "action": "send",
+        "options": {
+          "url": "http://83.97.38.238/data.zhtml",
+          "dataType": "text",
+          "schema": []
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "text",
+            "name": "data"
+          },
+          {
+            "type": "object",
+            "name": "headers",
+            "sub": [
+              {
+                "type": "text",
+                "name": "connection"
+              },
+              {
+                "type": "text",
+                "name": "content-type"
+              },
+              {
+                "type": "text",
+                "name": "date"
+              },
+              {
+                "type": "text",
+                "name": "server"
+              }
+            ]
+          }
+        ],
+        "outputType": "object"
+      },
+      {
+        "name": "icesightdata",
+        "module": "core",
+        "action": "setvalue",
+        "options": {
+          "value": "{{apiIceSight.data.replace('    ', ',').replace('   ', ',').replace('  ', ',').replace(' ', ',')}}"
+        },
+        "outputType": "text",
+        "output": true
+      },
+      {
+        "name": "repeat",
+        "module": "core",
+        "action": "repeat",
+        "options": {
+          "repeat": "{{icesightdata}}",
+          "outputFields": [],
+          "exec": {
+            "steps": {
+              "name": "ice2",
+              "module": "core",
+              "action": "setvalue",
+              "options": {
+                "value": "{{$value}}"
+              },
+              "outputType": "array",
+              "output": true
+            }
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "name": "$index",
+            "type": "number"
+          },
+          {
+            "name": "$number",
+            "type": "number"
+          },
+          {
+            "name": "$name",
+            "type": "text"
+          },
+          {
+            "name": "$value",
+            "type": "object"
+          },
+          {
+            "name": "ice2",
+            "type": "array"
+          }
+        ],
+        "outputType": "array"
+      },
+      {
+        "name": "insertIceSight",
+        "module": "dbupdater",
+        "action": "insert",
+        "options": {
+          "connection": "local",
+          "sql": {
+            "type": "insert",
+            "values": [
+              {
+                "table": "roadcondition",
+                "column": "sensor_id",
+                "type": "text",
+                "value": "1"
+              },
+              {
+                "table": "roadcondition",
+                "column": "timestamp",
+                "type": "datetime",
+                "value": "{{NOW_UTC}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "surf_temp",
+                "type": "text",
+                "value": "{{repeat[5].ice2}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "air_temp",
+                "type": "text",
+                "value": "{{repeat[4].ice2}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "surf_cond",
+                "type": "text",
+                "value": "{{repeat[9].ice2}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "friction",
+                "type": "text",
+                "value": "{{repeat[11].ice2}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "humidity",
+                "type": "text",
+                "value": "{{repeat[16].ice2}}"
+              }
+            ],
+            "table": "roadcondition",
+            "returning": "rc_id",
+            "query": "INSERT INTO roadcondition\n(sensor_id, timestamp, surf_temp, air_temp, surf_cond, friction, humidity) VALUES ('1', :P1 /* {{NOW_UTC}} */, :P2 /* {{repeat[5].ice2}} */, :P3 /* {{repeat[4].ice2}} */, :P4 /* {{repeat[9].ice2}} */, :P5 /* {{repeat[11].ice2}} */, :P6 /* {{repeat[16].ice2}} */)",
+            "params": [
+              {
+                "name": ":P1",
+                "type": "expression",
+                "value": "{{NOW_UTC}}"
+              },
+              {
+                "name": ":P2",
+                "type": "expression",
+                "value": "{{repeat[5].ice2}}"
+              },
+              {
+                "name": ":P3",
+                "type": "expression",
+                "value": "{{repeat[4].ice2}}"
+              },
+              {
+                "name": ":P4",
+                "type": "expression",
+                "value": "{{repeat[9].ice2}}"
+              },
+              {
+                "name": ":P5",
+                "type": "expression",
+                "value": "{{repeat[11].ice2}}"
+              },
+              {
+                "name": ":P6",
+                "type": "expression",
+                "value": "{{repeat[16].ice2}}"
+              }
+            ]
+          }
+        },
+        "meta": [
+          {
+            "name": "identity",
+            "type": "text"
+          },
+          {
+            "name": "affected",
+            "type": "number"
+          }
+        ]
+      }
+    ]
+  }
+}

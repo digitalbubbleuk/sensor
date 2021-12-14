@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "$_POST": [
+      {
+        "type": "text",
+        "name": "air_temp"
+      },
+      {
+        "type": "text",
+        "name": "humidity"
+      }
+    ]
+  },
+  "exec": {
+    "steps": [
+      {
+        "name": "apiMetsense",
+        "module": "api",
+        "action": "send",
+        "options": {
+          "url": "https://api.2droad.cloud/v1.0/sites/18/events/last",
+          "dataType": "json",
+          "schema": [],
+          "headers": {
+            "authorization": "{{'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhbGFzdGFpci5raW5nQGNsZWFydmlldy1pbnRlbGxpZ2VuY2UuY29tIiwianRpIjoiODdiYjYxNTctMGQxZC00MzkxLThjNjMtNjdlN2RhYmZjMjM5IiwiTWVtYmVyc2hpcCI6IkNyb3NzIiwiZXhwIjoxNjM4MzY4MTM3LCJpc3MiOiJDcm9zcy5TZWN1cml0eS5CZWFyZXIiLCJhdWQiOiJDcm9zcy5TZWN1cml0eS5CZWFyZXIifQ.5myFyMPzV4d5-oIkPryVmvhHgIPfsvbrQDP6awcJodc'}}"
+          }
+        },
+        "output": true,
+        "meta": [
+          {
+            "type": "object",
+            "name": "data",
+            "sub": [
+              {
+                "type": "text",
+                "name": "timestamp"
+              },
+              {
+                "type": "number",
+                "name": "site"
+              },
+              {
+                "type": "text",
+                "name": "surfaceStatus"
+              },
+              {
+                "type": "number",
+                "name": "surfaceTemperature"
+              },
+              {
+                "type": "number",
+                "name": "friction"
+              },
+              {
+                "type": "text",
+                "name": "metsaltData"
+              },
+              {
+                "type": "text",
+                "name": "meteoData"
+              }
+            ]
+          }
+        ],
+        "outputType": "object"
+      },
+      {
+        "name": "insertMetsense",
+        "module": "dbupdater",
+        "action": "insert",
+        "options": {
+          "connection": "local",
+          "sql": {
+            "type": "insert",
+            "values": [
+              {
+                "table": "roadcondition",
+                "column": "sensor_id",
+                "type": "text",
+                "value": "0"
+              },
+              {
+                "table": "roadcondition",
+                "column": "timestamp",
+                "type": "datetime",
+                "value": "{{NOW_UTC}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "surf_temp",
+                "type": "text",
+                "value": "{{apiMetsense.data.surfaceTemperature}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "air_temp",
+                "type": "text",
+                "value": "{{$_POST.air_temp}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "surf_cond",
+                "type": "text",
+                "value": "{{apiMetsense.data.surfaceStatus}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "friction",
+                "type": "text",
+                "value": "{{apiMetsense.data.friction}}"
+              },
+              {
+                "table": "roadcondition",
+                "column": "humidity",
+                "type": "text",
+                "value": "{{$_POST.humidity}}"
+              }
+            ],
+            "table": "roadcondition",
+            "returning": "rc_id",
+            "query": "INSERT INTO roadcondition\n(sensor_id, timestamp, surf_temp, air_temp, surf_cond, friction, humidity) VALUES ('0', :P1 /* {{NOW_UTC}} */, :P2 /* {{apiMetsense.data.surfaceTemperature}} */, :P3 /* {{$_POST.air_temp}} */, :P4 /* {{apiMetsense.data.surfaceStatus}} */, :P5 /* {{apiMetsense.data.friction}} */, :P6 /* {{$_POST.humidity}} */)",
+            "params": [
+              {
+                "name": ":P1",
+                "type": "expression",
+                "value": "{{NOW_UTC}}"
+              },
+              {
+                "name": ":P2",
+                "type": "expression",
+                "value": "{{apiMetsense.data.surfaceTemperature}}"
+              },
+              {
+                "name": ":P3",
+                "type": "expression",
+                "value": "{{$_POST.air_temp}}"
+              },
+              {
+                "name": ":P4",
+                "type": "expression",
+                "value": "{{apiMetsense.data.surfaceStatus}}"
+              },
+              {
+                "name": ":P5",
+                "type": "expression",
+                "value": "{{apiMetsense.data.friction}}"
+              },
+              {
+                "name": ":P6",
+                "type": "expression",
+                "value": "{{$_POST.humidity}}"
+              }
+            ]
+          }
+        },
+        "meta": [
+          {
+            "name": "identity",
+            "type": "text"
+          },
+          {
+            "name": "affected",
+            "type": "number"
+          }
+        ]
+      }
+    ]
+  }
+}

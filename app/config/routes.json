@@ -1,0 +1,15 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "page": "home",
+      "routeType": "page",
+      "layout": "main"
+    },
+    {
+      "path": "/home",
+      "page": "home",
+      "layout": "main"
+    }
+  ]
+}
